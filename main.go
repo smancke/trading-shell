@@ -40,6 +40,7 @@ func main() {
 
 	app.startConsole()
 
+	<-stop
 	app.stop()
 }
 
