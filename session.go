@@ -131,13 +131,19 @@ func (sess *Session) Init(symbol string) {
 	sess.Info()
 }
 
-func (sess *Session) Buy() {
+func (sess *Session) Buy(multS string) {
 	if sess.selected == "" {
 		sess.Answer("NO SYMBOL SELECTED!")
 		return
 	}
-	limit := sess.basePrice.Mult(sess.buyMaxMult)
-	limitS := sess.basePrice.Mult(sess.buyMaxMult).StringPrice()
+
+	mult := sess.buyMaxMult
+	if multS != "" {
+		mult = FromS(multS)
+	}
+
+	limit := sess.basePrice.Mult(mult)
+	limitS := sess.basePrice.Mult(mult).StringPrice()
 	qty := sess.maxInvestEUR.Div(sess.btcPrice).Div(limit).Floor().StringPrice()
 
 	//sess.Answerf("BUY %v @%v", qty, limit)
@@ -328,7 +334,7 @@ func (sess *Session) dispatch() {
 			sess.Price(arg)
 		case "buy", "b":
 			sess.Answerf("\n-------- buy  ------------")
-			sess.Buy()
+			sess.Buy(arg)
 		case "sell", "s":
 			sess.Answerf("\n-------- sell ------------")
 			sess.SellAllNow(arg)
@@ -343,6 +349,8 @@ func (sess *Session) dispatch() {
 		case "symbol-info":
 			sess.Answerf("\n-------- symbol info ---------")
 			sess.SymbolInfo()
+		case "set invest":
+
 		default:
 			if sess.selected == "" {
 				sess.Init(cmd)
