@@ -11,18 +11,13 @@ import (
 	"syscall"
 
 	"github.com/adshao/go-binance/v2"
-	"github.com/inancgumus/screen"
 	"github.com/smancke/trading-shell/config"
-	"github.com/smancke/trading-shell/logging"
 )
 
 const applicationName = "money-machine"
 
 func main() {
 	config := config.ReadConfig()
-	if err := logging.Set(config.LogLevel, config.TextLogging); err != nil {
-		exit(nil, err)
-	}
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "list-push-coins" {
@@ -36,7 +31,6 @@ func main() {
 	configToLog := *config
 	configToLog.APISecret = "..."
 	configToLog.APIKey = "..."
-	logging.LifecycleStart(applicationName, configToLog)
 
 	app, err := newApplication(config)
 	if err != nil {
@@ -46,7 +40,6 @@ func main() {
 
 	app.startConsole()
 
-	logging.LifecycleStop(applicationName, <-stop, nil)
 	app.stop()
 }
 
@@ -70,9 +63,6 @@ type application struct {
 }
 
 func (app *application) startConsole() {
-	screen.Clear()
-	screen.MoveTopLeft()
-
 	session := StartSession(app.config)
 	go func() {
 		for {
@@ -87,8 +77,6 @@ func (app *application) startConsole() {
 			text = strings.Replace(text, "\n", "", -1)
 
 			session.Put(text)
-			screen.Clear()
-			screen.MoveTopLeft()
 		}
 	}()
 }
@@ -100,7 +88,7 @@ func (app *application) startHTTP() {
 	go func() {
 		if err := app.httpSrv.ListenAndServe(); err != nil {
 			if err == http.ErrServerClosed {
-				logging.ServerClosed(applicationName)
+				//logging.ServerClosed(applicationName)
 			} else {
 				exit(nil, err)
 			}
@@ -146,7 +134,6 @@ func (app *application) handlerChain() http.Handler {
 }
 
 var exit = func(signal os.Signal, err error) {
-	logging.LifecycleStop(applicationName, signal, err)
 	if err == nil {
 		os.Exit(0)
 	} else {
