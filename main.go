@@ -12,8 +12,8 @@ import (
 
 	"github.com/adshao/go-binance/v2"
 	"github.com/inancgumus/screen"
-	"github.com/smancke/money-machine/config"
-	"github.com/smancke/money-machine/logging"
+	"github.com/smancke/trading-shell/config"
+	"github.com/smancke/trading-shell/logging"
 )
 
 const applicationName = "money-machine"

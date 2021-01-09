@@ -9,7 +9,7 @@ import (
 
 var configReader = ConfigReader{
 	ConfigT:   reflect.TypeOf(Config{}),
-	EnvPrefix: "MM_",
+	EnvPrefix: "",
 }
 
 // Config for the application

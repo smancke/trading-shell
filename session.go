@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/adshao/go-binance/v2"
-	"github.com/smancke/money-machine/config"
+	"github.com/smancke/trading-shell/config"
 	"strings"
 	"time"
 )
